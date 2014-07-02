@@ -1,0 +1,29 @@
+{
+    "name": "node-pcsc",
+    "version": "0.0.1",
+    "description": "node-pcsc c++ addon",
+    "main": "index.js",
+    "keywords": [
+        "pcsc", "pc/sc", "smartcard", "smartcards"
+    ],
+    "author": {
+        "name": "coolbong",
+        "email": "coolbong.works@gmail.com"
+    },
+    "gypfile": true,
+    "devDependencies": {
+        "mocha": "~1.11.0"
+    },
+    "scripts": {
+        "test": "mocha",
+        "install": "node-gyp rebuild"
+    },
+    "license": {
+        "type": "MIT"
+    },
+    "repository": {
+        "type": "git",
+        "url": "http://github.com/coolbong/node-pcsc"
+    }
+}
+
