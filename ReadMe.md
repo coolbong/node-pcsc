@@ -17,7 +17,8 @@ pc/sc c++ addon
     console.log(result.sw.toString(16).toUpperCase());
 
 
-    input = new Buffer('00C000001B', 'hex');
+    var str = '00C00000' + result.sw2.toString(16);
+    input = new Buffer(str, 'hex');
     result = pcsc.sendapdu(input);
     assert(result.sw == 0x9000);
     console.log(result.resp.toString('hex').toUpperCase());
