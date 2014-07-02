@@ -8,6 +8,8 @@ var pcsc = require('../index');
 
 exports.atr = {
     'atr': function() {
-        //
+        pcsc.init();
+        var atr = pcsc.connect();
+        assert(Buffer.isBuffer(atr));
     }
 };
