@@ -15,16 +15,8 @@ console.log(readers);
 pcsc.select_reader(readers[0]);
 
 var atr = pcsc.connect();
-console.log(atr.toString('hex').toUpperCase());
+console.log('atr : ' + atr.toString('hex').toUpperCase());
+input = new Buffer('00A4040008A000000151000000', 'hex');
 
-input = new Buffer('00A4040008A000000003000000', 'hex');
 result = pcsc.sendapdu(input);
-console.log(result.sw.toString(16).toUpperCase());
-
-
-var str = '00C00000' + result.sw2.toString(16);
-input = new Buffer(str, 'hex');
-result = pcsc.sendapdu(input);
-assert(result.sw == 0x9000);
-console.log(result.resp.toString('hex').toUpperCase());
-
+console.log(result);

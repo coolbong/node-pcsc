@@ -5,7 +5,6 @@
 #include "pcsc.h"
 #include "pcscwrap.h"
 
-
 using namespace v8;
 using namespace node;
 
@@ -189,7 +188,6 @@ Handle<Value> PCSC::Transmit(const Arguments& args)
 	int32 len;
 	LONG ret;
 
-    //printf("input_len: %d\n", input_len);
 	ret = pcsc_transmit(input, input_len, receive_buf, &output_len);
 
 	if(ret != SCARD_S_SUCCESS) {
@@ -204,7 +202,6 @@ Handle<Value> PCSC::Transmit(const Arguments& args)
     int sw1 = receive_buf[output_len - 2];
     int sw2 = receive_buf[output_len - 1];
     int sw = (sw1 << 8) | sw2;
-
 
 	node::Buffer *slowBuffer = node::Buffer::New(len);
 	memcpy(node::Buffer::Data(slowBuffer), receive_buf, len);
