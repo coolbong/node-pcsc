@@ -25,14 +25,14 @@ class PCSC : public node::ObjectWrap {
 	
 
 
-
+#if 0
 	//for example
 	static v8::Handle<v8::Value> GetCounter(const v8::Arguments& args);
 	static v8::Handle<v8::Value> GetBytes(const v8::Arguments& args);
 
 	
 	double counter_;
-
+#endif
 
 };
 

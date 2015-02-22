@@ -1,4 +1,4 @@
-#define BUILDING_NODE_EXTENSION
+//#define BUILDING_NODE_EXTENSION
 #include <node.h>
 #include <node_buffer.h>
 #include "pcsc_type.h"
@@ -32,10 +32,10 @@ void PCSC::Init(Handle<Object> target)
 	tpl->PrototypeTemplate()->Set(String::NewSymbol("transmit"), FunctionTemplate::New(Transmit)->GetFunction());
 	tpl->PrototypeTemplate()->Set(String::NewSymbol("disconnect"), FunctionTemplate::New(Disconnect)->GetFunction());
 	
-
+#if 0
 	tpl->PrototypeTemplate()->Set(String::NewSymbol("getCounter"), FunctionTemplate::New(GetCounter)->GetFunction());
 	tpl->PrototypeTemplate()->Set(String::NewSymbol("getBytes"), FunctionTemplate::New(GetBytes)->GetFunction());
-	//tpl->PrototypeTemplate()->Set(String::NewSymbol("init"), FunctionTemplate::New(Init)->GetFunction());
+#endif
 	
 
 	Persistent<Function> constructor = Persistent<Function>::New(tpl->GetFunction());
@@ -47,19 +47,10 @@ Handle<Value> PCSC::New(const Arguments& args)
 	HandleScope scope;
 
 	PCSC* obj = new PCSC();
-	obj->counter_ = args[0]->IsUndefined() ? 0 : args[0]->NumberValue();
+	//obj->counter_ = args[0]->IsUndefined() ? 0 : args[0]->NumberValue();
 	obj->Wrap(args.This());
 
 	return args.This();
-}
-
-Handle<Value> PCSC::GetCounter(const Arguments& args)
-{
-	HandleScope scope;
-
-	PCSC* obj = ObjectWrap::Unwrap<PCSC>(args.This());
-
-	return scope.Close(Number::New(obj->counter_));
 }
 
 Handle<Value> PCSC::Init(const Arguments& args)
@@ -94,7 +85,7 @@ Handle<Value> PCSC::GetReadersName(const Arguments& args)
     LONG ret;
 
 
-	uint64 len = pcsc_get_readers_name_length();
+	DWORD len = pcsc_get_readers_name_length();
 	if(len == 0) {
 	    return ThrowException(Exception::TypeError(String::New("PCSC SCardListReaders error")));
 	}
@@ -123,6 +114,7 @@ Handle<Value> PCSC::GetReadersName(const Arguments& args)
 	Local<Object> actualBuffer = bufferConstructor->NewInstance(3, constructorArgs);
 	return scope.Close(actualBuffer);
 }
+
 Handle<Value> PCSC::SetReader(const Arguments& args)
 {
 	HandleScope scope;
@@ -234,6 +226,16 @@ Handle<Value> PCSC::Disconnect(const Arguments& args)
 }
 
 
+#if 0
+Handle<Value> PCSC::GetCounter(const Arguments& args)
+{
+	HandleScope scope;
+
+	PCSC* obj = ObjectWrap::Unwrap<PCSC>(args.This());
+
+	return scope.Close(Number::New(obj->counter_));
+}
+
 Handle<Value> PCSC::GetBytes(const Arguments& args)
 {
 	HandleScope scope;
@@ -271,7 +273,7 @@ Handle<Value> PCSC::GetBytes(const Arguments& args)
 	return scope.Close(actualBuffer);
 }
 
-void printHexString(CHAR* sPrefix, LPBYTE baData, DWORD dataLen)
+void printHexString(char* sPrefix, LPBYTE baData, DWORD dataLen)
 {
 	DWORD i;
 
@@ -284,3 +286,4 @@ void printHexString(CHAR* sPrefix, LPBYTE baData, DWORD dataLen)
 
 	printf("\n");
 }
+#endif

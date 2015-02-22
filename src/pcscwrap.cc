@@ -1,12 +1,12 @@
 #include "pcscwrap.h"
-
+#include <string.h>
 
 
 SCARDCONTEXT		hContext; // Resource manager handle
 SCARD_READERSTATE   hReaderState;
 SCARDHANDLE			hCard;
 DWORD				dwActiveProtocol;      // Active protocol (T=0).
-CHAR				szSelectedReader[256]; // reader name
+char				szSelectedReader[256]; // reader name
 
 LONG pcsc_init()
 {
@@ -30,11 +30,11 @@ LONG pcsc_release()
 	return ret;
 }
 
-uint64 pcsc_get_readers_name_length()
+DWORD pcsc_get_readers_name_length()
 {
 
     LONG ret = SCARD_S_SUCCESS;
-    uint64 readers_name_length;
+    DWORD readers_name_length;
     ret = SCardListReaders(hContext, NULL, NULL, &readers_name_length);
     if (ret == SCARD_S_SUCCESS) {
         return readers_name_length;
@@ -43,13 +43,14 @@ uint64 pcsc_get_readers_name_length()
     }
 }
 
-LONG pcsc_get_readers_name(char* readers_name, uint64 readers_name_length)
+LONG pcsc_get_readers_name(char* readers_name, DWORD readers_name_length)
 {
     LONG ret = SCARD_S_SUCCESS;
 
     ret = SCardListReaders(hContext, NULL, readers_name, &readers_name_length);
     //first reader is default reader
-    strcpy_s(szSelectedReader, readers_name);
+    //strcpy_s(szSelectedReader, readers_name);
+    strcpy(szSelectedReader, readers_name);
 
     return ret;
 }
@@ -57,7 +58,8 @@ LONG pcsc_get_readers_name(char* readers_name, uint64 readers_name_length)
 void pcsc_set_reader_name(const char *reader_name)
 {
     //printf("reader_name: %s", reader_name);
-    strcpy_s(szSelectedReader, reader_name);
+    //strcpy_s(szSelectedReader, reader_name);
+    strcpy(szSelectedReader, reader_name);
 }
 
 char* pcsc_get_reader_list()
@@ -65,14 +67,15 @@ char* pcsc_get_reader_list()
 	LONG ret = SCARD_S_SUCCESS;
 	LPTSTR readerName = NULL;
 	DWORD dw = SCARD_AUTOALLOCATE;
-	// The SCardListReaders function provides the list of readers 
+	// The SCardListReaders function provides the list of readers
 	ret = SCardListReaders(
                     hContext,             // Resource manager handle. 
-                    NULL, // NULL: list all readers in the system 
+                    NULL,                 // NULL: list all readers in the system
                     (LPTSTR) &readerName, // for reader len
                     &dw );
 	// There is only one reader connected.
-	strcpy_s(szSelectedReader, readerName);
+	//strcpy_s(szSelectedReader, readerName);
+	strcpy(szSelectedReader, readerName);
 	//printf("selectedReader %s\n", szSelectedReader);
 
 	SCardFreeMemory(hContext, readerName);

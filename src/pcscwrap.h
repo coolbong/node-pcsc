@@ -1,15 +1,22 @@
 #ifndef __PCSCWRAP_H__
-#define __PCSCWARP_H__
+#define __PCSCWRAP_H__
 #include <stdio.h>
-#include <WinSCard.h>
+
+#ifdef __APPLE__
+#include <PCSC/pcsclite.h>
+#include <PCSC/winscard.h>
+#include <PCSC/wintypes.h>
+#else
+#include <winscard.h>
+#endif
 #include "pcsc_type.h"
 
 
 #define SCARD_PROTOCOL SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1
 
 LONG pcsc_init();
-uint64 pcsc_get_readers_name_length();
-LONG pcsc_get_readers_name(char* readers_name, uint64 readers_name_length);
+DWORD pcsc_get_readers_name_length();
+LONG pcsc_get_readers_name(char* readers_name, DWORD readers_name_length);
 void pcsc_set_reader_name(const char *reader_name);
 char* pcsc_get_reader_list();
 LONG pcsc_connect(byte* atr, LPDWORD atrLen);

@@ -1,4 +1,6 @@
-#define BUILDING_NODE_EXTENSION
+//#ifndef BUILDING_NODE_EXTENSION
+//#define BUILDING_NODE_EXTENSION
+//#endif
 #include <node.h>
 #include "pcsc.h"
 
