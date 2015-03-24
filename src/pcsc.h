@@ -7,7 +7,10 @@
 class PCSC : public node::ObjectWrap {
  public:
   static void Init(v8::Handle<v8::Object> target);
-  
+
+  //FIXME SCARDCONTEXT
+
+
 
  private:
 	PCSC();

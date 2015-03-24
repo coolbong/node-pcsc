@@ -35,6 +35,12 @@ DWORD pcsc_get_readers_name_length()
 
     LONG ret = SCARD_S_SUCCESS;
     DWORD readers_name_length;
+
+    ret = SCardIsValidContext(hContext);
+    if(ret != SCARD_S_SUCCESS) {
+        return 0;
+    }
+
     ret = SCardListReaders(hContext, NULL, NULL, &readers_name_length);
     if (ret == SCARD_S_SUCCESS) {
         return readers_name_length;
@@ -46,6 +52,12 @@ DWORD pcsc_get_readers_name_length()
 LONG pcsc_get_readers_name(char* readers_name, DWORD readers_name_length)
 {
     LONG ret = SCARD_S_SUCCESS;
+
+    ret = SCardIsValidContext(hContext);
+
+    if(ret != SCARD_S_SUCCESS) {
+        return ret;
+    }
 
     ret = SCardListReaders(hContext, NULL, readers_name, &readers_name_length);
     //first reader is default reader
@@ -65,6 +77,13 @@ void pcsc_set_reader_name(const char *reader_name)
 char* pcsc_get_reader_list()
 {
 	LONG ret = SCARD_S_SUCCESS;
+
+
+	ret = SCardIsValidContext(hContext);
+	if(ret != SCARD_S_SUCCESS) {
+		return NULL;
+	}
+
 	LPTSTR readerName = NULL;
 	DWORD dw = SCARD_AUTOALLOCATE;
 	// The SCardListReaders function provides the list of readers
@@ -90,6 +109,12 @@ LONG pcsc_connect(byte* atr, LPDWORD atrLen)
 	ret = SCardReconnect(hCard, SCARD_SHARE_SHARED, SCARD_PROTOCOL, SCARD_UNPOWER_CARD, &dwActiveProtocol);
 
 	if(ret != SCARD_S_SUCCESS) {
+
+    	ret = SCardIsValidContext(hContext);
+    	if(ret != SCARD_S_SUCCESS) {
+    		return ret;
+    	}
+
         ret = SCardConnect(
                         hContext, // Resource manager handle.
                         szSelectedReader,     // Reader name.
@@ -148,6 +173,30 @@ LONG pcsc_transmit(byte* input, DWORD inputLen, byte* output, LPDWORD outputLen)
 						outputLen);
 
 	return 0;
+}
+
+
+LONG pcsc_reset(bool isCold)
+{
+    LONG ret = SCARD_S_SUCCESS;
+    DWORD dwInitialization, dwActiveProtocol;
+
+    if (isCold) {
+        dwInitialization = SCARD_UNPOWER_CARD; //Power down the card and reset it (Cold Reset).
+    } else {
+    	dwInitialization = SCARD_RESET_CARD;   //Reset the card (Warm Reset).
+    }
+
+
+    //Establishes a connection to a smart card contained by a specific reader.
+    ret = SCardReconnect(
+    			hCard,					// card handle.
+    			SCARD_SHARE_SHARED,		// Share Mode.
+    			SCARD_PROTOCOL,			// SCARD_PROTOCOL_T0 | SCARD_PROTOCOL_T1,
+    			dwInitialization,		// SCARD_UNPOWER_CARD(cold) or SCARD_RESET_CARD(warm)
+    			&dwActiveProtocol);	    // Active protocol.
+
+    return ret;
 }
 
 LONG pcsc_disconnect()
